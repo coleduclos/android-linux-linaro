@@ -31,6 +31,7 @@
 #include <linux/gpio.h>
 #if defined(CONFIG_OMAP5_DSS_HDMI_AUDIO)
 #include <sound/asoundef.h>
+#include <plat/omap_hwmod.h>
 #endif
 #include <drm/drm_edid.h>
 
@@ -1097,6 +1098,11 @@ void ti_hdmi_5xxx_wp_audio_enable(struct hdmi_ip_data *ip_data, bool enable)
 
 void ti_hdmi_5xxx_audio_start(struct hdmi_ip_data *ip_data, bool enable)
 {
+	if (enable)
+		omap_hwmod_set_slave_idlemode(ip_data->oh, HWMOD_IDLEMODE_NO);
+	else
+		omap_hwmod_set_slave_idlemode(ip_data->oh,
+					      HWMOD_IDLEMODE_SMART_WKUP);
 	REG_FLD_MOD(ip_data->base_wp,
 		HDMI_WP_AUDIO_CTRL, enable, 30, 30);
 }
