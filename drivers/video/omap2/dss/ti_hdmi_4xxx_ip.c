@@ -340,10 +340,11 @@ int ti_hdmi_4xxx_phy_enable(struct hdmi_ip_data *ip_data)
 	REG_FLD_MOD(phy_base, HDMI_TXPHY_PAD_CFG_CTRL, 0x1, 27, 27);
 
 	ip_data->irq = gpio_to_irq(ip_data->hpd_gpio);
+
 	r = request_threaded_irq(ip_data->irq,
-			NULL, hpd_irq_handler,
-			IRQF_DISABLED | IRQF_TRIGGER_RISING |
-			IRQF_TRIGGER_FALLING, "hpd", ip_data);
+				 NULL, hpd_irq_handler,
+				 IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING |
+				 IRQF_ONESHOT, "hpd", ip_data);
 	if (r) {
 		DSSERR("HPD IRQ request failed\n");
 		ip_data->irq = NO_IRQ;
